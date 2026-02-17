@@ -1,0 +1,38 @@
+{
+  "name": "whoxa-peer-server",
+  "version": "1.0.0",
+  "description": "PeerJS Server for Whoxa App WebRTC signaling",
+  "private": true,
+  "scripts": {
+    "dev": "node server.js",
+    "build": "next build",
+    "start": "NODE_ENV=production node server.js",
+    "lint": "next lint",
+    "server": "node server.js",
+    "vercel-build": "next build"
+  },
+  "dependencies": {
+    "next": "^14.2.0",
+    "react": "^18.3.0",
+    "react-dom": "^18.3.0",
+    "peer": "^0.2.10",
+    "ws": "^8.18.0",
+    "express": "^4.19.2",
+    "cors": "^2.8.5"
+  },
+  "devDependencies": {
+    "@types/node": "^20.14.0",
+    "@types/react": "^18.3.0",
+    "@types/react-dom": "^18.3.0",
+    "@types/ws": "^8.5.10",
+    "@types/express": "^4.17.21",
+    "@types/cors": "^2.8.17",
+    "typescript": "^5.5.0",
+    "eslint": "^8.57.0",
+    "eslint-config-next": "^14.2.0"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
+  }
+}
