@@ -2,9 +2,31 @@
 
 PeerJS Server implementation using Next.js for WebRTC signaling in the Whoxa application.
 
+## 🚀 Quick Start for Vercel Deployment
+
+**Important:** Vercel Serverless Functions cannot maintain persistent WebSocket connections required by PeerJS Server.
+
+### ✅ Recommended: Use PeerJS Cloud (Free, No Server Needed)
+
+The easiest solution is to use **PeerJS Cloud** - a free hosted PeerJS server. Your Flutter client can connect directly to `peerjs.com` without deploying any server.
+
+**See [PEERJS_CLOUD_SETUP.md](./PEERJS_CLOUD_SETUP.md) for complete Flutter client configuration.**
+
+Benefits:
+- ✅ Free and always available
+- ✅ No server deployment needed
+- ✅ Works perfectly with Vercel
+- ✅ Secure HTTPS/WSS connections
+
+### Alternative: Deploy Custom Server
+
+If you need custom server configuration, deploy `server.js` to:
+- **Railway**: https://railway.app (supports WebSockets)
+- **Render**: https://render.com (supports WebSockets)
+
 ## Overview
 
-This server provides WebRTC signaling capabilities using PeerJS Server, enabling peer-to-peer connections for voice and video calls in the Whoxa Flutter app.
+This repository provides WebRTC signaling capabilities using PeerJS Server. For Vercel deployments, we recommend using PeerJS Cloud (see above). For custom deployments, this server enables peer-to-peer connections for voice and video calls in the Whoxa Flutter app.
 
 ## Features
 
