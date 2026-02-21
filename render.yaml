@@ -1,0 +1,19 @@
+# Render Blueprint for Whoxa PeerJS Server
+# https://render.com/docs/blueprint-spec
+services:
+  - type: web
+    name: whoxa-peer-server
+    runtime: node
+    region: oregon
+
+    buildCommand: npm install && npm run build
+    startCommand: node server.js
+
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PEERJS_PATH
+        value: /
+      - key: PEERJS_SECURE
+        value: "false"
+      # PORT is set automatically by Render - do not override
