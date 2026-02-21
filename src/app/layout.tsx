@@ -5,6 +5,9 @@ export const metadata: Metadata = {
   description: 'PeerJS Server for Whoxa App WebRTC signaling',
 };
 
+// Prevent static prerender; fixes "useContext" and prerender errors on Render
+export const dynamic = 'force-dynamic';
+
 export default function RootLayout({
   children,
 }: {
