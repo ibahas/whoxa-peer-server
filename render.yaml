@@ -6,7 +6,8 @@ services:
     runtime: node
     region: oregon
 
-    buildCommand: npm install && npm run build
+    # --include=dev so TypeScript + @types are installed (needed for next build)
+    buildCommand: npm install --include=dev && npm run build
     startCommand: node server.js
 
     envVars:

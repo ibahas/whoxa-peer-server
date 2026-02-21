@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>PeerJS client example</title>
+  <script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
+</head>
+<body>
+  <h1>PeerJS client (WebRTC signaling)</h1>
+  <p>Replace BASE_URL with your server (e.g. http://localhost:4000). Path must be /peerjs.</p>
+  <pre id="log"></pre>
+  <script>
+    const BASE_URL = 'http://localhost:4000';
+    const peerPath = '/peerjs';
+
+    const peer = new Peer({
+      host: new URL(BASE_URL).hostname,
+      port: new URL(BASE_URL).port || (BASE_URL.startsWith('https') ? 443 : 80),
+      path: peerPath,
+      secure: BASE_URL.startsWith('https'),
+    });
+
+    function log(msg) {
+      const el = document.getElementById('log');
+      el.textContent += new Date().toISOString().slice(11, 19) + ' ' + msg + '\n';
+    }
+
+    peer.on('open', (id) => {
+      log('Peer open id=' + id);
+    });
+
+    peer.on('connection', (conn) => {
+      log('incoming connection from ' + conn.peer);
+      conn.on('data', (data) => log('data: ' + data));
+    });
+
+    peer.on('disconnected', () => {
+      log('disconnected');
+    });
+
+    peer.on('error', (err) => {
+      log('error: ' + err.message);
+    });
+  </script>
+</body>
+</html>

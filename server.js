@@ -67,10 +67,23 @@ app.prepare().then(() => {
     });
   });
 
-  // Create HTTP or HTTPS server
+  // Create HTTP or HTTPS server (no default handler - we route manually)
   const server = sslOptions
-    ? require('https').createServer(sslOptions, peerApp)
-    : require('http').createServer(peerApp);
+    ? require('https').createServer(sslOptions)
+    : require('http').createServer();
+
+  // Socket.IO on path /socket (for Flutter socket_io_client)
+  const socketIoPath = process.env.SOCKET_IO_PATH || '/socket';
+  const io = require('socket.io')(server, {
+    path: socketIoPath,
+    cors: { origin: allowedOrigins === '*' ? '*' : allowedOrigins.split(',').map(o => o.trim()) },
+  });
+  io.on('connection', (socket) => {
+    console.log(`🔌 Socket.IO client connected: ${socket.id}`);
+    socket.on('disconnect', () => {
+      console.log(`🔌 Socket.IO client disconnected: ${socket.id}`);
+    });
+  });
 
   // Create PeerJS server
   const peerServer = ExpressPeerServer(server, {
@@ -79,7 +92,7 @@ app.prepare().then(() => {
     proxied: false,
   });
 
-  // Mount PeerJS server
+  // Mount PeerJS server on Express app
   peerApp.use(peerPath, peerServer);
 
   // PeerJS event handlers
@@ -91,15 +104,15 @@ app.prepare().then(() => {
     console.log(`❌ Peer disconnected: ${client.getId()}`);
   });
 
-  // Handle Next.js requests
+  // Single request handler: /socket → Socket.IO; other → Express or Next.js
   server.on('request', (req, res) => {
     const parsedUrl = parse(req.url, true);
-    
-    // Route PeerJS requests to PeerJS server
+    if (parsedUrl.pathname?.startsWith(socketIoPath)) {
+      return; // Socket.IO handles this path
+    }
     if (parsedUrl.pathname?.startsWith(peerPath)) {
       peerApp(req, res);
     } else {
-      // Route other requests to Next.js
       handle(req, res, parsedUrl);
     }
   });
@@ -114,9 +127,10 @@ app.prepare().then(() => {
     console.log(`🚀 PeerJS Server started`);
     console.log(`📍 Server URL: ${serverUrl}`);
     console.log(`🔌 Port: ${port}`);
-    console.log(`🛣️  Path: ${peerPath}`);
+    console.log(`🛣️  PeerJS path: ${peerPath}`);
+    console.log(`🔌 Socket.IO path: ${socketIoPath}`);
     console.log(`🔐 Secure: ${secure}`);
-    console.log(`🌐 Next.js running on port ${nextPort}`);
+    console.log(`🌐 Next.js on same port`);
     if (process.env.VERCEL) {
       console.log(`☁️  Running on Vercel`);
     }

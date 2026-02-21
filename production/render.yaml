@@ -1,0 +1,19 @@
+# Render Blueprint – production signaling server
+# Root Directory in Render dashboard must be set to this folder (e.g. production)
+services:
+  - type: web
+    name: whoxa-signaling-server
+    runtime: node
+    region: oregon
+    buildCommand: npm install
+    startCommand: node server.js
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PEERJS_PROXIED
+        value: "true"
+      - key: PEERJS_PATH
+        value: /peerjs
+      - key: SOCKET_IO_PATH
+        value: /socket

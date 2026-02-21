@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Socket.IO client example</title>
+  <script src="https://cdn.socket.io/4.8.0/socket.io.min.js"></script>
+</head>
+<body>
+  <h1>Socket.IO client</h1>
+  <p>Open console. Replace BASE_URL with your server (e.g. http://localhost:4000).</p>
+  <pre id="log"></pre>
+  <script type="module">
+    const BASE_URL = 'http://localhost:4000';
+    const socketPath = '/socket';
+
+    const socket = io(BASE_URL, {
+      path: socketPath,
+      transports: ['websocket'],
+      auth: { token: 'optional-auth-token' },
+    });
+
+    function log(msg) {
+      const el = document.getElementById('log');
+      el.textContent += new Date().toISOString().slice(11, 19) + ' ' + msg + '\n';
+    }
+
+    socket.on('connect', () => {
+      log('connected ' + socket.id);
+      socket.emit('join-room', 'room-1', (ack) => {
+        log('join-room ack: ' + JSON.stringify(ack));
+      });
+    });
+
+    socket.on('user-joined', (data) => {
+      log('user-joined: ' + JSON.stringify(data));
+    });
+
+    socket.on('user-left', (data) => {
+      log('user-left: ' + JSON.stringify(data));
+    });
+
+    socket.on('disconnect', (reason) => {
+      log('disconnect: ' + reason);
+    });
+
+    socket.on('connect_error', (err) => {
+      log('connect_error: ' + err.message);
+    });
+  </script>
+</body>
+</html>
