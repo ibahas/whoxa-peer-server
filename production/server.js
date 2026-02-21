@@ -73,12 +73,13 @@ peerServer.on('disconnect', (client) => {
 });
 
 // ---------------------------------------------------------------------------
-// Socket.IO (room / app signaling) – WebSocket transport only
+// Socket.IO (room / app signaling) – polling first then websocket (Render-friendly)
 // ---------------------------------------------------------------------------
 
 const io = new Server(httpServer, {
   path: config.socketPath,
-  transports: ['websocket'], // WebSocket only
+  transports: ['polling', 'websocket'], // polling first helps behind reverse proxy, then upgrade to ws
+  allowEIO3: true,
   cors: {
     origin: config.corsOrigin === '*' ? '*' : config.corsOrigins,
     credentials: true,
@@ -153,7 +154,7 @@ async function start() {
   httpServer.listen(PORT, () => {
     console.log(`Server listening on port ${PORT}`);
     console.log(`  PeerJS path: ${config.peerPath} (proxied: ${config.peerProxied})`);
-    console.log(`  Socket.IO path: ${config.socketPath} (transports: websocket only)`);
+    console.log(`  Socket.IO path: ${config.socketPath} (transports: polling, websocket)`);
     console.log(`  Health: http://localhost:${PORT}/health`);
   });
 }

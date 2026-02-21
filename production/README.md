@@ -12,7 +12,7 @@ npm start
 
 - Health: http://localhost:4000/health  
 - PeerJS: http://localhost:4000/peerjs  
-- Socket.IO: path `/socket`, WebSocket only  
+- Socket.IO: path `/socket`, transports polling then websocket (Render-friendly)  
 
 ## Scripts
 

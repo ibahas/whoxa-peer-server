@@ -42,7 +42,7 @@ No build step (no Next.js/TypeScript build). Just install and run.
 
 - Base URL: `https://<your-service-name>.onrender.com`.
 - **PeerJS:** `https://<your-service-name>.onrender.com/peerjs` (path `/peerjs`).
-- **Socket.IO:** same host, path `/socket`, transports WebSocket only.
+- **Socket.IO:** same host, path `/socket`, transports polling then websocket.
 - **Health:** `https://<your-service-name>.onrender.com/health`.
 
 ## 7. Client configuration
@@ -51,7 +51,7 @@ No build step (no Next.js/TypeScript build). Just install and run.
 
 - URL: `https://<your-service-name>.onrender.com` (no path in the base URL).
 - Path: `/socket`.
-- Transports: `['websocket']`.
+- Transports: `['polling', 'websocket']` (polling first for proxy compatibility).
 
 **PeerJS:**
 

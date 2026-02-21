@@ -21,7 +21,7 @@
                     │  └───────────────────────────────────────────────────┘  │
                     │  ┌───────────────────────────────────────────────────┐  │
                     │  │ Socket.IO on path: /socket                         │  │
-                    │  │ - transports: ['websocket'] only                   │  │
+                    │  │ - transports: ['polling', 'websocket']             │  │
                     │  │ - Rooms: join-room, user-joined, user-left         │  │
                     │  └───────────────────────────────────────────────────┘  │
                     └─────────────────────────────────────────────────────────┘
@@ -63,7 +63,7 @@
 - **What it does:**  
   - **join-room:** client joins a room by id.  
   - **user-joined / user-left:** broadcast to the room when someone joins or disconnects.  
-- **Transport:** WebSocket only (`transports: ['websocket']`).  
+- **Transport:** polling then websocket (`transports: ['polling', 'websocket']`) for compatibility behind reverse proxies (e.g. Render).  
 - **Path:** `/socket`. Same HTTP server as Express and PeerJS.
 
 ## When a TURN server is required
