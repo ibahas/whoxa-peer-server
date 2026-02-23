@@ -78,8 +78,10 @@ peerServer.on('disconnect', (client) => {
 
 const io = new Server(httpServer, {
   path: config.socketPath,
-  transports: ['polling', 'websocket'], // polling first helps behind reverse proxy, then upgrade to ws
+  transports: ['polling', 'websocket'],
   allowEIO3: true,
+  perMessageDeflate: false, // avoid proxy/compression issues behind Render
+  connectTimeout: 45000,
   cors: {
     origin: config.corsOrigin === '*' ? '*' : config.corsOrigins,
     credentials: true,

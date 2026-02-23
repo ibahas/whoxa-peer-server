@@ -1,0 +1,43 @@
+# تطبيق هذه التعديلات بالضبط في socket_service.dart
+
+## 1) عدم تحويل الرابط إلى wss/ws — استخدم https/http كما هو
+
+ابحث عن السطور التي تبني urlToUse (حوالي بعد "socket_io_client_new يصلح"):
+
+  final uri = Uri.parse(_socketUrl);
+  final bool isSecure = uri.scheme == 'https';
+  final bool needExplicitPort = ...
+  final String urlToUse = needExplicitPort
+      ? (isSecure ? 'wss://${uri.host}:443' : 'ws://${uri.host}:80')
+      : (isSecure ? 'wss://${uri.host}:${uri.port}' : 'ws://${uri.host}:${uri.port}');
+
+استبدلها بهذا (استخدم https و http فقط، بدون wss/ws):
+
+  final uri = Uri.parse(_socketUrl);
+  final bool isSecure = uri.scheme == 'https' || uri.scheme == 'wss';
+  final bool needExplicitPort = uri.host.isNotEmpty && (!uri.hasPort || uri.port == 0);
+  final String urlToUse = needExplicitPort
+      ? (isSecure ? 'https://${uri.host}:443' : 'http://${uri.host}:80')
+      : (isSecure ? 'https://${uri.host}:${uri.port}' : 'http://${uri.host}:${uri.port}');
+
+النتيجة: يجب أن يطبع "Connecting with URL: https://whoxa-peer-server.onrender.com:443" وليس wss://.
+
+---
+
+## 2) ترتيب الـ transports: polling أولاً
+
+ابحث عن:
+
+  .setTransports(['websocket', 'polling'])
+
+استبدلها بـ:
+
+  .setTransports(['polling', 'websocket'])
+
+---
+
+## 3) (اختياري) Cloudflare
+
+الطلبات تمر عبر Cloudflare. تأكد من:
+- Cloudflare → Network → WebSockets: ON
+- بعد التعديلين أعلاه، الطلب الأول سيكون GET عادي (polling) وليس upgrade، فيمر عادة بدون مشكلة.

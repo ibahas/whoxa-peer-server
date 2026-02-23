@@ -76,9 +76,11 @@ app.prepare().then(() => {
   const socketIoPath = process.env.SOCKET_IO_PATH || '/socket';
   const io = require('socket.io')(server, {
     path: socketIoPath,
-    transports: ['polling', 'websocket'], // polling first helps behind Render proxy, then upgrade to ws
-    cors: { origin: allowedOrigins === '*' ? '*' : allowedOrigins.split(',').map(o => o.trim()) },
+    transports: ['polling', 'websocket'],
     allowEIO3: true,
+    cors: { origin: allowedOrigins === '*' ? '*' : allowedOrigins.split(',').map(o => o.trim()) },
+    perMessageDeflate: false, // avoid proxy/compression issues behind Render
+    connectTimeout: 45000,
   });
   io.on('connection', (socket) => {
     console.log(`🔌 Socket.IO client connected: ${socket.id}`);
